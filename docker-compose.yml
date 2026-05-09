@@ -1,17 +1,17 @@
 
 
 services:
-  mysql-rednorte:
+  mysql-db:
     image: mysql:8.0
-    container_name: db_rednorte
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: rednorte_db
+    container_name: rednorte-mysql
     ports:
       - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
+      # Este comando crea las dos bases de datos al iniciar el contenedor
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
-  mysql_data:
+  mysql-data:
