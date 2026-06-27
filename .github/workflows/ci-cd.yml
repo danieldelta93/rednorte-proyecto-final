@@ -1,0 +1,45 @@
+name: CI/CD Microservicios RedNorte
+
+# 1. ¿Cuándo se activa esto? Cada vez que hagas "push" a la rama main o develop
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest # Se ejecuta en un servidor Linux gratuito de GitHub
+
+    steps:
+      # 2. Descarga tu código al servidor de GitHub
+      - name: Checkout del código
+        uses: actions/checkout@v3
+
+      # 3. Prepara Java 17 en el servidor
+      - name: Configurar Java 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # 4. Compila y empaqueta CADA microservicio
+      - name: Construir Servicio Pacientes
+        working-directory: ./servicio-pacientes
+        run: mvn clean package -DskipTests
+
+      - name: Construir Servicio Citas
+        working-directory: ./servicio-citas
+        run: mvn clean package -DskipTests
+
+      - name: Construir Servicio Lista Espera
+        working-directory: ./servicio-lista-espera
+        run: mvn clean package -DskipTests
+
+      - name: Construir Servicio Notificaciones
+        working-directory: ./servicio-notificaciones
+        run: mvn clean package -DskipTests
+
+      # 5. Verifica que los contenedores de Docker se puedan construir sin errores
+      - name: Test de Build en Docker Compose
+        run: docker-compose build
