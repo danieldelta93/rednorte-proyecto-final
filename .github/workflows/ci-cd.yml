@@ -42,4 +42,4 @@ jobs:
 
       # 5. Verifica que los contenedores de Docker se puedan construir sin errores
       - name: Test de Build en Docker Compose
-        run: docker-compose build
+        run: docker compose build
